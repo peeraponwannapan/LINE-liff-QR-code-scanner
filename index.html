@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>QR Scanner</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <!--<p id="scanCode"></p>-->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script>
+    liff
+      .init({
+        liffId: "YOUR LIFF ID" // Use own liffId
+      })
+      .then(() => {
+        // Start to use liff's api
+        liff.scanCode().then(result => {
+          // result = { value: '' }
+          const dataResult = JSON.stringify(result);
+          const data = JSON.parse(dataResult);
+          //document.getElementById("scanCode").textContent = data.value;
+
+          //ajax
+          $.ajax({
+            url: "/data_qrcode",
+            type: "POST",
+            data: data,
+            complete: function () {
+              //called when complete
+              console.log('process complete');
+            },
+
+            success: function (data) {
+              console.log(data);
+              console.log('process sucess');
+            },
+
+            error: function () {
+              console.log('process error');
+            },
+          });
+          //end ajax
+          liff.closeWindow();
+        });
+        //liff.closeWindow();
+      })
+      .catch((err) => {
+        // Error happens during initialization
+        console.log(err.code, err.message);
+      });
+  </script>
+</body>
+
+</html>
